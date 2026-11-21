@@ -33,4 +33,4 @@ python3 bin/hydrate_agents.py --host <claude|codex|cursor|antigravity> --output 
 | `claude` | `<output>/.claude/agents/<id>.md` | Markdown + YAML frontmatter (`model`, `effort`, `tools`) |
 | `codex` | `<output>/.codex/agents/<id>.toml` | TOML (`model`, `model_reasoning_effort`, `sandbox_mode`, `developer_instructions`) |
 | `cursor` | `<output>/.cursor/agents/<id>.md` | Markdown + YAML frontmatter (`model`, `reasoning_effort`, `readonly`) |
-| `antigravity` | `<output>/.gemini/agents/<id>.md` | Markdown + YAML frontmatter (`model`, `reasoning_effort`, `enable_write_tools`) |
+| `antigravity` | `<output>/.agents/agents/<id>.md` | Markdown + YAML frontmatter (`model`, `reasoning_effort`, `enable_write_tools`) |

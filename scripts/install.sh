@@ -31,14 +31,29 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dest)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: $1 requires a value." >&2
+        usage >&2
+        exit 2
+      fi
       DEST="$2"
       shift 2
       ;;
     --host)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: $1 requires a value." >&2
+        usage >&2
+        exit 2
+      fi
       HOSTS="$2"
       shift 2
       ;;
     --version)
+      if [[ $# -lt 2 ]]; then
+        echo "Error: $1 requires a value." >&2
+        usage >&2
+        exit 2
+      fi
       VERSION="$2"
       shift 2
       ;;
@@ -70,9 +85,11 @@ require_cmd() {
 }
 
 require_cmd python3
-if [[ -z "${ARCHIVE_OVERRIDE}" && "${UNINSTALL}" -eq 0 ]]; then
-  require_cmd curl
+if [[ "${UNINSTALL}" -eq 0 ]]; then
   require_cmd tar
+  if [[ -z "${ARCHIVE_OVERRIDE}" ]]; then
+    require_cmd curl
+  fi
 fi
 
 IS_TTY=0
@@ -108,6 +125,10 @@ if [[ "${UNINSTALL}" -eq 1 ]]; then
     ".cursor/agents/compliance-remediator.md" \
     ".cursor/skills/audit-plugin-compliance" \
     ".cursor/skills/remediate-plugin-compliance" \
+    ".agents/agents/compliance-auditor.md" \
+    ".agents/agents/compliance-remediator.md" \
+    ".agents/skills/audit-plugin-compliance" \
+    ".agents/skills/remediate-plugin-compliance" \
     ".gemini/agents/compliance-auditor.md" \
     ".gemini/agents/compliance-remediator.md" \
     ".gemini/skills/audit-plugin-compliance" \
@@ -118,6 +139,43 @@ if [[ "${UNINSTALL}" -eq 1 ]]; then
   exit 0
 fi
 
+normalize_hosts() {
+  local raw="$1"
+  local expanded=()
+  local token item seen
+  IFS=',' read -r -a tokens <<< "${raw}"
+  for token in "${tokens[@]}"; do
+    token="$(echo "${token}" | tr -d '[:space:]')"
+    [[ -z "${token}" ]] && continue
+    case "${token}" in
+      1|claude) expanded+=("claude") ;;
+      2|codex) expanded+=("codex") ;;
+      3|cursor) expanded+=("cursor") ;;
+      4|antigravity) expanded+=("antigravity") ;;
+      5|all) expanded+=("claude" "codex" "cursor" "antigravity") ;;
+      *)
+        echo "Unsupported host: ${token}" >&2
+        exit 2
+        ;;
+    esac
+  done
+  local unique=()
+  for item in "${expanded[@]}"; do
+    seen=0
+    for u in "${unique[@]+"${unique[@]}"}"; do
+      if [[ "${u}" == "${item}" ]]; then
+        seen=1
+        break
+      fi
+    done
+    if [[ "${seen}" -eq 0 ]]; then
+      unique+=("${item}")
+    fi
+  done
+  local IFS=','
+  echo "${unique[*]}"
+}
+
 if [[ -z "${HOSTS}" ]]; then
   if [[ "${IS_TTY}" -eq 1 ]]; then
     echo ""
@@ -125,25 +183,19 @@ if [[ -z "${HOSTS}" ]]; then
     echo "  1) claude       (.claude/agents/ + .claude/skills/)"
     echo "  2) codex        (.codex/agents/  + .codex/skills/)"
     echo "  3) cursor       (.cursor/agents/ + .cursor/skills/)"
-    echo "  4) antigravity  (.gemini/agents/ + .gemini/skills/)"
+    echo "  4) antigravity  (.agents/agents/ + .agents/skills/)"
     echo "  5) all          (all four hosts)"
     read -r -p "Choose host(s) (comma-separated names or 1-5) [all]: " choice
-    choice="${choice:-all}"
-    case "${choice}" in
-      1) HOSTS="claude" ;;
-      2) HOSTS="codex" ;;
-      3) HOSTS="cursor" ;;
-      4) HOSTS="antigravity" ;;
-      5|all) HOSTS="claude,codex,cursor,antigravity" ;;
-      *) HOSTS="${choice}" ;;
-    esac
+    HOSTS="${choice:-all}"
   else
     HOSTS="claude,codex,cursor,antigravity"
   fi
 fi
 
-if [[ "${HOSTS}" == "all" ]]; then
-  HOSTS="claude,codex,cursor,antigravity"
+HOSTS="$(normalize_hosts "${HOSTS}")"
+if [[ -z "${HOSTS}" ]]; then
+  echo "Error: no valid hosts selected." >&2
+  exit 2
 fi
 
 TMP_DIR="$(mktemp -d)"
@@ -201,7 +253,7 @@ host_dir_for() {
     claude) echo ".claude" ;;
     codex) echo ".codex" ;;
     cursor) echo ".cursor" ;;
-    antigravity) echo ".gemini" ;;
+    antigravity) echo ".agents" ;;
     *)
       echo "Unsupported host: $1" >&2
       exit 2

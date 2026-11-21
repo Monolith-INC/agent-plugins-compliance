@@ -64,7 +64,7 @@ After install, **restart your agent session** so the newly installed skills and 
 | **Manifest** | `plugin.json` | Closed v1.0.0 manifest declaring `io.github.monolith-inc.agents` templates. |
 | **Skills** | `skills/audit-plugin-compliance/`, `skills/remediate-plugin-compliance/` | Composable audit and guided remediation skills. |
 | **MCP Server** | `mcp.json` → `./bin/compliance-mcp-server.py` | Zero-dependency `stdio` MCP server exposing `audit_plugin`, `list_agent_templates`, and `hydrate_agents`. |
-| **Agent Templates** | `io.github.monolith-inc.agents/` | Host-agnostic templates and `host-profiles.json` hydrated into native formats for Claude Code (`.claude/agents/*.md`), Codex (`.codex/agents/*.toml`), Cursor (`.cursor/agents/*.md`), and Google Antigravity (`.gemini/agents/*.md`). |
+| **Agent Templates** | `io.github.monolith-inc.agents/` | Host-agnostic templates and `host-profiles.json` hydrated into native formats for Claude Code (`.claude/agents/*.md`), Codex (`.codex/agents/*.toml`), Cursor (`.cursor/agents/*.md`), and Google Antigravity (`.agents/agents/*.md`). |
 
 ## Direct CLI Usage
 

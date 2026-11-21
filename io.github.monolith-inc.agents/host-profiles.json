@@ -61,7 +61,7 @@
     },
     "antigravity": {
       "format": "markdown-frontmatter",
-      "outputDir": ".gemini/agents",
+      "outputDir": ".agents/agents",
       "fileExtension": ".md",
       "modelMap": {
         "fast": "flash",

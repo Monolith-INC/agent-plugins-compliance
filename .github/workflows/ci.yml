@@ -26,8 +26,8 @@ jobs:
           test -f /tmp/ci-hydrate/.codex/agents/compliance-remediator.toml
           test -f /tmp/ci-hydrate/.cursor/agents/compliance-auditor.md
           test -f /tmp/ci-hydrate/.cursor/agents/compliance-remediator.md
-          test -f /tmp/ci-hydrate/.gemini/agents/compliance-auditor.md
-          test -f /tmp/ci-hydrate/.gemini/agents/compliance-remediator.md
+          test -f /tmp/ci-hydrate/.agents/agents/compliance-auditor.md
+          test -f /tmp/ci-hydrate/.agents/agents/compliance-remediator.md
       - name: Verify MCP stdio server
         run: |
           printf '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}\n' \
