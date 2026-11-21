@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Self-audit Agent Plugins v1.0.0 compliance
+        run: python3 bin/audit_plugin.py . --format markdown
+      - name: Verify agent template hydration across all hosts
+        run: |
+          for host in claude codex cursor antigravity; do
+            python3 bin/hydrate_agents.py --host "$host" --output /tmp/ci-hydrate
+          done
+          test -f /tmp/ci-hydrate/.claude/agents/compliance-auditor.md
+          test -f /tmp/ci-hydrate/.claude/agents/compliance-remediator.md
+          test -f /tmp/ci-hydrate/.codex/agents/compliance-auditor.toml
+          test -f /tmp/ci-hydrate/.codex/agents/compliance-remediator.toml
+          test -f /tmp/ci-hydrate/.cursor/agents/compliance-auditor.md
+          test -f /tmp/ci-hydrate/.cursor/agents/compliance-remediator.md
+          test -f /tmp/ci-hydrate/.gemini/agents/compliance-auditor.md
+          test -f /tmp/ci-hydrate/.gemini/agents/compliance-remediator.md
+      - name: Verify MCP stdio server
+        run: |
+          printf '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}\n' \
+            | python3 bin/compliance-mcp-server.py --plugin-root "$PWD" \
+            | grep -q '"audit_plugin"'
+      - name: Syntax check install.sh
+        run: bash -n scripts/install.sh
