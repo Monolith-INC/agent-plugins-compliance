@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Maps host-agnostic Agent Template tiers (fast, balanced, deep) and reasoning efforts (low, medium, high) to native host agent configurations during installation or on-demand hydration.",
+  "hosts": {
+    "claude": {
+      "format": "markdown-frontmatter",
+      "outputDir": ".claude/agents",
+      "fileExtension": ".md",
+      "modelMap": {
+        "fast": "haiku",
+        "balanced": "sonnet",
+        "deep": "opus"
+      },
+      "effortMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "toolsMap": {
+        "read-only": ["Read", "Glob", "Grep", "Bash"],
+        "read-write": ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
+      }
+    },
+    "codex": {
+      "format": "toml",
+      "outputDir": ".codex/agents",
+      "fileExtension": ".toml",
+      "modelMap": {
+        "fast": "gpt-5-codex-mini",
+        "balanced": "gpt-5-codex",
+        "deep": "gpt-5-codex"
+      },
+      "effortMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "sandboxMap": {
+        "read-only": "read-only",
+        "read-write": "workspace-write"
+      }
+    },
+    "cursor": {
+      "format": "markdown-frontmatter",
+      "outputDir": ".cursor/agents",
+      "fileExtension": ".md",
+      "modelMap": {
+        "fast": "fast",
+        "balanced": "inherit",
+        "deep": "inherit"
+      },
+      "effortMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "readonlyMap": {
+        "read-only": true,
+        "read-write": false
+      }
+    },
+    "antigravity": {
+      "format": "markdown-frontmatter",
+      "outputDir": ".gemini/agents",
+      "fileExtension": ".md",
+      "modelMap": {
+        "fast": "flash",
+        "balanced": "inherit",
+        "deep": "pro"
+      },
+      "effortMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "writeToolsMap": {
+        "read-only": false,
+        "read-write": true
+      }
+    }
+  }
+}

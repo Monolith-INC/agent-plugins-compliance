@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "compliance-tools": {
+      "type": "stdio",
+      "command": "./bin/compliance-mcp-server.py",
+      "args": [
+        "--plugin-root",
+        "${PLUGIN_ROOT}",
+        "--data-dir",
+        "${PLUGIN_DATA}/compliance-tools"
+      ],
+      "env": {
+        "COMPLIANCE_PLUGIN_ROOT": "${PLUGIN_ROOT}",
+        "COMPLIANCE_DATA_DIR": "${PLUGIN_DATA}/compliance-tools"
+      },
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

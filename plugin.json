@@ -1,0 +1,47 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agent-plugins-compliance",
+  "version": "1.0.0",
+  "description": "Portable Agent Plugins v1.0.0 compliance auditor and guided remediator with host-agnostic agent templates for Claude Code, Codex, Cursor, and Google Antigravity.",
+  "author": {
+    "name": "Monolith-INC",
+    "url": "https://github.com/Monolith-INC"
+  },
+  "homepage": "https://github.com/Monolith-INC/agent-plugins-compliance#readme",
+  "repository": "https://github.com/Monolith-INC/agent-plugins-compliance",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agent-plugins",
+    "compliance",
+    "audit",
+    "remediation",
+    "mcp",
+    "skills",
+    "agent-templates"
+  ],
+  "extensions": {
+    "io.github.monolith-inc.agents": {
+      "schemaVersion": "1.0.0",
+      "hostProfiles": "./io.github.monolith-inc.agents/host-profiles.json",
+      "hydrator": "./bin/hydrate_agents.py",
+      "agents": [
+        {
+          "id": "compliance-auditor",
+          "role": "Agent Plugins v1.0.0 Compliance Auditor",
+          "template": "./io.github.monolith-inc.agents/templates/compliance-auditor.template.md",
+          "modelTier": "balanced",
+          "reasoningEffort": "medium",
+          "access": "read-only"
+        },
+        {
+          "id": "compliance-remediator",
+          "role": "Agent Plugins v1.0.0 Compliance Remediator",
+          "template": "./io.github.monolith-inc.agents/templates/compliance-remediator.template.md",
+          "modelTier": "deep",
+          "reasoningEffort": "high",
+          "access": "read-write"
+        }
+      ]
+    }
+  }
+}
